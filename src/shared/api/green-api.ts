@@ -71,7 +71,6 @@ export const createGreenApi = (credentials: GreenApiCredentials) => {
         429: 'Превышен лимит запросов GREEN-API. Подождите немного.',
         469: 'Telegram временно ограничил поиск аккаунтов. Попробуйте позже.',
       };
-      // Do not expose response bodies or request URLs: either may contain credentials.
       throw new GreenApiError(
         messages[response.status] ?? `Ошибка GREEN-API (${response.status}). Попробуйте позже.`,
         response.status,

@@ -85,7 +85,6 @@ export const chatReducer = (state: ChatState, event: ChatEvent): ChatState => {
                 messages: chat.messages.map(message => {
                   if (message.remoteId !== event.remoteId) return message;
                   if (message.status === 'read') return message;
-                  // Older queued delivery events must not turn a read message back into sent.
                   const rank = {
                     sending: 0,
                     uncertain: 0,

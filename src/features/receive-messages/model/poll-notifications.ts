@@ -28,7 +28,6 @@ export const pollNotifications = async (
   onState: (state: ReceivingState) => void,
 ): Promise<void> => {
   let failures = 0;
-  // Keep a pending receipt until acknowledged. A failed DELETE must never advance the queue.
   let pending: Notification | null = null;
   onState({ status: 'connecting' });
   while (!signal.aborted) {
@@ -47,7 +46,6 @@ export const pollNotifications = async (
       if (signal.aborted) return;
       failures = 0;
       onState({ status: 'online' });
-      // Bound the request rate even if the service immediately returns an empty response.
       await abortableDelay(250, signal);
     } catch (error) {
       if (signal.aborted) return;

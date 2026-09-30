@@ -8,7 +8,6 @@ export const parseNotification = (value: unknown): ChatEvent | null => {
   const sender = record(body.senderData);
   const data = record(body.messageData);
   const chatId = typeof sender.chatId === 'string' ? sender.chatId : '';
-  // Telegram groups use negative identifiers; this UI only supports private conversations.
   if (chatId.startsWith('-') || chatId.endsWith('@g.us')) return null;
   if (
     chatId &&
