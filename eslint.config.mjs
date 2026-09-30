@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import unicorn from 'eslint-plugin-unicorn';
 import css from '@eslint/css';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 
 const sourceFiles = ['src/**/*.{ts,tsx}', 'tests/**/*.{ts,tsx}', 'vite.config.ts'];
@@ -20,17 +21,19 @@ export default tseslint.config(
       ...reactHooks.configs.flat.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'func-style': ['error', 'expression'],
-      'prefer-arrow-callback': 'error',
-      'unicorn/consistent-function-style': ['error', {
-        default: 'arrow-function',
-        defaultExport: 'arrow-function',
-        namedFunctions: 'arrow-function',
-        namedExports: 'arrow-function',
-        callbacks: 'arrow-function',
-        objectProperties: 'arrow-function',
-        reassignedVariables: 'arrow-function',
-        typedVariables: 'arrow-function',
-      }],
+      'unicorn/consistent-function-style': [
+        'error',
+        {
+          default: 'arrow-function',
+          defaultExport: 'arrow-function',
+          namedFunctions: 'arrow-function',
+          namedExports: 'arrow-function',
+          callbacks: 'arrow-function',
+          objectProperties: 'arrow-function',
+          reassignedVariables: 'arrow-function',
+          typedVariables: 'arrow-function',
+        },
+      ],
       'unicorn/filename-case': unicornFilenameCase,
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/no-null': 'off',
@@ -79,4 +82,5 @@ export default tseslint.config(
       'unicorn/text-encoding-identifier-case': 'error',
     },
   },
+  prettierRecommended,
 );

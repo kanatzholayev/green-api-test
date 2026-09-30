@@ -1,21 +1,111 @@
-.page { display: flex; height: 100dvh; max-width: 1600px; margin: 0 auto; background: #fff; overflow: hidden; position: relative; }
-.chatBox { flex: 1; min-width: 0; height: 100%; }
-.conversationsPane { display: flex; flex-direction: column; height: 100%; min-height: 0; background: #fff; border-right: 1px solid #e8ebef; }
-.emptyList { width: 320px; flex-shrink: 0; }
-.sidebarHeader { min-height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #e8ebef; }
-.sidebarHeader h1 { font-size: 18px; font-weight: 600; margin: 0; }
-.emptySidebar { flex: 1; padding: 30px 12px; text-align: center; color: #8b95a0; font-size: 13px; }
-.sidebarFooter { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 20px; border-top: 1px solid #e8ebef; }
-.instanceLabel { color: #78838e; font-size: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.connectionStatus { display: flex; align-items: center; gap: 7px; color: #78838e; font-size: 12px; white-space: nowrap; padding-inline: 8px; }
-.connectionDot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #79a78d; flex-shrink: 0; }
-.connecting .connectionDot, .retrying .connectionDot { background: #d6a55b; }
-.stopped .connectionDot { background: #ca7272; }
-.receivingAlert { position: absolute; top: 84px; left: 340px; right: 24px; z-index: 2; }
+.page {
+  display: flex;
+  height: 100dvh;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+}
+.chatBox {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+.conversationsPane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: #fff;
+  border-right: 1px solid #e8ebef;
+}
+.emptyList {
+  width: 320px;
+  flex-shrink: 0;
+}
+.sidebarHeader {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid #e8ebef;
+}
+.sidebarHeader h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+.emptySidebar {
+  flex: 1;
+  padding: 30px 12px;
+  text-align: center;
+  color: #8b95a0;
+  font-size: 13px;
+}
+.sidebarFooter {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  border-top: 1px solid #e8ebef;
+}
+.instanceLabel {
+  color: #78838e;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #78838e;
+  font-size: 12px;
+  white-space: nowrap;
+  padding-inline: 8px;
+}
+.connectionDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #79a78d;
+  flex-shrink: 0;
+}
+.connecting .connectionDot,
+.retrying .connectionDot {
+  background: #d6a55b;
+}
+.stopped .connectionDot {
+  background: #ca7272;
+}
+.receivingAlert {
+  position: absolute;
+  top: 84px;
+  left: 340px;
+  right: 24px;
+  z-index: 2;
+}
 
 @media (width <= 640px) {
-  .emptyList { width: 100%; }
-  .sidebarHeader { min-height: 64px; }
-  .receivingAlert { left: 12px; right: 12px; top: 76px; }
-  .connectionStatus { font-size: 0; gap: 0; }
+  .emptyList {
+    width: 100%;
+  }
+  .sidebarHeader {
+    min-height: 64px;
+  }
+  .receivingAlert {
+    left: 12px;
+    right: 12px;
+    top: 76px;
+  }
+  .connectionStatus {
+    font-size: 0;
+    gap: 0;
+  }
 }

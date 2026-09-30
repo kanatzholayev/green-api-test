@@ -6,5 +6,6 @@ export default {
     'declaration-block-single-line-max-declarations': null,
     'media-feature-range-notation': 'context',
     'at-rule-empty-line-before': null,
+    'rule-empty-line-before': null,
   },
 };

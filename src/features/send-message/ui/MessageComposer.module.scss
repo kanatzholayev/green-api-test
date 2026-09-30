@@ -1,9 +1,44 @@
-.area { padding: 12px 24px 20px; }
-.composer { display: flex; align-items: flex-end; gap: 10px; max-width: 850px; margin: 0 auto; padding: 10px 10px 10px 15px; background: #fff; border: 1px solid #dfe4e9; border-radius: 11px; }
-.composer:focus-within { border-color: #8aa9c7; }
-.composer :global(.MuiInput-root::before), .composer :global(.MuiInput-root::after) { display: none; }
-.composer :global(textarea) { padding: 7px 0; font-size: 14px; line-height: 1.5; }
-.hint { max-width: 850px; margin: 6px auto 0; text-align: right; color: #8793a0; font-size: 11px; }
+.area {
+  padding: 12px 24px 20px;
+}
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 10px 10px 10px 15px;
+  background: #fff;
+  border: 1px solid #dfe4e9;
+  border-radius: 11px;
+}
+.composer:focus-within {
+  border-color: #8aa9c7;
+}
+.composer :global(.MuiInput-root::before),
+.composer :global(.MuiInput-root::after) {
+  display: none;
+}
+.composer :global(textarea) {
+  padding: 7px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.hint {
+  max-width: 850px;
+  margin: 6px auto 0;
+  text-align: right;
+  color: #8793a0;
+  font-size: 11px;
+}
 
-@media (width <= 800px) { .area { padding: 10px 16px 16px; } }
-@media (width <= 640px) { .area { padding: 10px 12px max(12px, env(safe-area-inset-bottom)); } }
+@media (width <= 800px) {
+  .area {
+    padding: 10px 16px 16px;
+  }
+}
+@media (width <= 640px) {
+  .area {
+    padding: 10px 12px max(12px, env(safe-area-inset-bottom));
+  }
+}

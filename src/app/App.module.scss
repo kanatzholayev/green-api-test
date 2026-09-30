@@ -1,6 +1,11 @@
-:global(*) { box-sizing: border-box; }
-:global(body) { margin: 0; }
+:global(*) {
+  box-sizing: border-box;
+}
 
-.app { 
-  min-height: 100dvh; 
+:global(body) {
+  margin: 0;
+}
+
+.app {
+  min-height: 100dvh;
 }

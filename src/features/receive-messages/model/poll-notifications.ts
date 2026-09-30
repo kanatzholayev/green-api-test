@@ -1,14 +1,25 @@
 import { GreenApiError, type GreenApi } from '../../../shared/api/green-api';
 import type { Notification } from '../../../shared/api/types';
 
-export type ReceivingState = { status: 'connecting' | 'online' | 'retrying' | 'stopped'; error?: unknown };
+export type ReceivingState = {
+  status: 'connecting' | 'online' | 'retrying' | 'stopped';
+  error?: unknown;
+};
 
-export const abortableDelay = (ms: number, signal: AbortSignal): Promise<void> => new Promise(resolve => {
-  if (signal.aborted) { resolve(); return; }
-  const done = () => { clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); };
-  const timer = setTimeout(done, ms);
-  signal.addEventListener('abort', done, { once: true });
-});
+export const abortableDelay = (ms: number, signal: AbortSignal): Promise<void> =>
+  new Promise(resolve => {
+    if (signal.aborted) {
+      resolve();
+      return;
+    }
+    const done = () => {
+      clearTimeout(timer);
+      signal.removeEventListener('abort', done);
+      resolve();
+    };
+    const timer = setTimeout(done, ms);
+    signal.addEventListener('abort', done, { once: true });
+  });
 
 export const pollNotifications = async (
   api: Pick<GreenApi, 'receiveNotification' | 'deleteNotification'>,
@@ -29,7 +40,8 @@ export const pollNotifications = async (
       }
       if (pending) {
         const deleted = await api.deleteNotification(pending.receiptId, signal);
-        if (!deleted?.result) throw new Error('GREEN-API не подтвердил обработку уведомления. Повторяем запрос.');
+        if (!deleted?.result)
+          throw new Error('GREEN-API не подтвердил обработку уведомления. Повторяем запрос.');
         pending = null;
       }
       if (signal.aborted) return;
