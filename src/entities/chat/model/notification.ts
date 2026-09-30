@@ -11,11 +11,11 @@ export function parseNotification(value: unknown): ChatEvent | null {
   const chatId = typeof sender.chatId === 'string' ? sender.chatId : '';
   // Telegram groups use negative identifiers; this UI only supports private conversations.
   if (chatId.startsWith('-') || chatId.endsWith('@g.us')) return null;
-  if (body.typeWebhook === 'incomingMessageReceived' && chatId && typeof body.idMessage === 'string') {
+  if (chatId && body.typeWebhook === 'incomingMessageReceived' && typeof body.idMessage === 'string') {
     const text = data.typeMessage === 'textMessage'
       ? record(data.textMessageData).textMessage
-      : data.typeMessage === 'extendedTextMessage'
-        ? record(data.extendedTextMessageData).text : undefined;
+      : (data.typeMessage === 'extendedTextMessage'
+        ? record(data.extendedTextMessageData).text : undefined);
     if (typeof text !== 'string') return null;
     return {
       type: 'message-added', chatId,

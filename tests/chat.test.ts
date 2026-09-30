@@ -38,13 +38,13 @@ describe('chat state', () => {
 });
 
 describe('Telegram notifications', () => {
-  const base = { typeWebhook: 'incomingMessageReceived', idMessage: '123', timestamp: 1763115112, senderData: { chatId: '10000000', senderName: 'Анна' } };
+  const base = { typeWebhook: 'incomingMessageReceived', idMessage: '123', timestamp: 1_763_115_112, senderData: { chatId: '10000000', senderName: 'Анна' } };
   it('parses plain and extended text without rendering HTML', () => {
     for (const messageData of [
       { typeMessage: 'textMessage', textMessageData: { textMessage: '<b>Привет</b>' } },
       { typeMessage: 'extendedTextMessage', extendedTextMessageData: { text: '<b>Привет</b>' } },
     ]) {
-      expect(parseNotification({ ...base, messageData })).toMatchObject({ type: 'message-added', chatId: '10000000', message: { text: '<b>Привет</b>', timestamp: 1763115112000 } });
+      expect(parseNotification({ ...base, messageData })).toMatchObject({ type: 'message-added', chatId: '10000000', message: { text: '<b>Привет</b>', timestamp: 1_763_115_112_000 } });
     }
   });
   it('ignores media, groups, and unknown events', () => {

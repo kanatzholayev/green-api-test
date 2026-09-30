@@ -20,11 +20,11 @@ it('connects, creates a phone chat, sends text and renders the incoming reply in
   vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
     const method = new URL(url).pathname.split('/')[2];
     requests.push(method);
-    const json = (value: unknown) => new Response(JSON.stringify(value));
+    const json = (value: unknown) => Response.json(value);
     if (method === 'getStateInstance') return json({ stateInstance: 'authorized' });
     if (method === 'getSettings') return json({ typeInstance: 'telegram', incomingWebhook: 'yes', webhookUrl: '' });
     if (method === 'checkAccount') {
-      expect(JSON.parse(String(init?.body))).toEqual({ phoneNumber: 79991234567 });
+      expect(JSON.parse(String(init?.body))).toEqual({ phoneNumber: 79_991_234_567 });
       return json({ exist: true, chatId: '10000000' });
     }
     if (method === 'sendMessage') {

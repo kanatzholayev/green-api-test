@@ -4,6 +4,11 @@ import type { ChatMessage } from '../model/types';
 import styles from './MessageBubble.module.scss';
 
 const statusLabels = { sending: 'Отправляется', sent: 'Принято GREEN-API', delivered: 'Доставлено', read: 'Прочитано', failed: 'Не отправлено', uncertain: 'Отправка не подтверждена' };
+function statusMark(message: ChatMessage) {
+  if (message.status === 'sending') return '…';
+  if (message.status === 'failed' || message.status === 'uncertain') return '!';
+  return message.status === 'delivered' || message.status === 'read' ? '✓✓' : '✓';
+}
 export function MessageBubble({ message, onRetry }: { message: ChatMessage; onRetry: () => void }) {
   const outgoing = message.direction === 'outgoing';
   const unsuccessful = message.status === 'failed' || message.status === 'uncertain';
@@ -12,7 +17,7 @@ export function MessageBubble({ message, onRetry }: { message: ChatMessage; onRe
       <p>{message.text}</p>
       <div className={styles.meta}><time dateTime={new Date(message.timestamp).toISOString()}>{formatTime(message.timestamp)}</time>
         {outgoing && message.status ? <Tooltip title={statusLabels[message.status]}><span className={`${styles.status} ${message.status === 'read' ? styles.read : ''} ${unsuccessful ? styles.failed : ''}`} aria-label={statusLabels[message.status]}>
-          {message.status === 'sending' ? '…' : unsuccessful ? '!' : message.status === 'delivered' || message.status === 'read' ? '✓✓' : '✓'}
+          {statusMark(message)}
         </span></Tooltip> : null}
       </div>
       {unsuccessful ? <div className={styles.failure}><span>{message.error ?? 'Не удалось доставить сообщение.'}</span>

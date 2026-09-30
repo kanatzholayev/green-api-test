@@ -13,7 +13,7 @@
 .stopped .connectionDot { background: #ca7272; }
 .receivingAlert { position: absolute; top: 84px; left: 340px; right: 24px; z-index: 2; }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .emptyList { width: 100%; }
   .sidebarHeader { min-height: 64px; }
   .receivingAlert { left: 12px; right: 12px; top: 76px; }

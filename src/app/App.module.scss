@@ -1,9 +1,6 @@
 :global(*) { box-sizing: border-box; }
 :global(body) { margin: 0; }
-:global(button:focus-visible), :global(a:focus-visible) { outline: 2px solid #4b7caf; outline-offset: 2px; }
 
-.app { min-height: 100dvh; }
-
-@media (prefers-reduced-motion: reduce) {
-  :global(*), :global(*::before), :global(*::after) { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+.app { 
+  min-height: 100dvh; 
 }

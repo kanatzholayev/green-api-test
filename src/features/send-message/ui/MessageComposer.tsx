@@ -17,7 +17,11 @@ export function MessageComposer({ onSend }: { onSend: (text: string) => Promise<
   return <div className={styles.area}>
     <form className={styles.composer} onSubmit={event => { event.preventDefault(); void submit(); }}>
       <TextField aria-label="Текст сообщения" placeholder="Сообщение" value={text} onChange={event => setText(event.target.value)} multiline minRows={1} maxRows={5} slotProps={{ htmlInput: { maxLength: 4096, 'aria-label': 'Текст сообщения' } }} fullWidth variant="standard" onKeyDown={event => {
-        if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void submit(); }
+        if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
+          return;
+        }
+
+        event.preventDefault(); void submit();
       }} />
       <Button variant="contained" type="submit" aria-label="Отправить сообщение" loading={busy} disabled={!text.trim() || text.length > 4096}>Отправить</Button>
     </form>

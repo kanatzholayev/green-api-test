@@ -37,7 +37,7 @@ export function createGreenApi(credentials: GreenApiCredentials) {
       : AbortSignal.timeout(options.timeout ?? 20_000);
     const response = await fetch(url, {
       method: options.verb ?? 'GET', signal,
-      ...(options.body === undefined ? {} : {
+      ...(options.body !== undefined && {
         headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(options.body),
       }),
     });

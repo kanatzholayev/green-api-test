@@ -10,7 +10,7 @@
 .help { display: block; width: fit-content; margin: 18px auto 0; color: #68727d; font-size: 13px; text-decoration: none; }
 .help:hover { color: #426e9b; }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .page { padding: 16px; }
   .card { padding: 24px; }
 }

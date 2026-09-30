@@ -10,4 +10,4 @@
 .failure { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-width: 360px; margin-top: 8px; color: #a65454; font-size: 12px; line-height: 1.4; }
 .failure :global(.MuiButton-root) { color: #a65454; padding-left: 0; }
 
-@media (max-width: 640px) { .bubble { max-width: 88%; } }
+@media (width <= 640px) { .bubble { max-width: 88%; } }

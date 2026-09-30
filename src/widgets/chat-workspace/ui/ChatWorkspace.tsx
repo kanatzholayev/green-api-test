@@ -40,8 +40,7 @@ function preview(chat: Chat): string {
 function toBoxStatus(status: ChatMessage['status']): XChatMessage['status'] {
   if (status === 'failed' || status === 'uncertain') return 'error';
   if (status === 'read') return 'read';
-  if (status === 'sending') return 'sending';
-  return 'sent';
+  return status === 'sending' ? 'sending' : 'sent';
 }
 
 function toBoxMessage(chat: Chat, message: ChatMessage): XChatMessage {

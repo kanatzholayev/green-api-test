@@ -29,7 +29,10 @@ export function CreateChat({ open, api, onClose, onCreate }: {
     } catch (cause) { setError(errorMessage(cause)); }
     finally { busyRef.current = false; setBusy(false); }
   }
-  function close() { if (!busy) { setError(''); setPhoneError(''); onClose(); } }
+  function close() {
+    if (busy) return;
+    setError(''); setPhoneError(''); onClose();
+  }
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try { normalizePhone(phone); setPhoneError(''); void create(phone); }

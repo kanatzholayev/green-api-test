@@ -7,7 +7,7 @@ const credentials = { apiUrl: 'https://4100.api.green-api.com', idInstance: '410
 
 describe('GREEN-API client', () => {
   it('uses Telegram method paths and original chat IDs', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ idMessage: '1' })));
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ idMessage: '1' }));
     vi.stubGlobal('fetch', fetchMock);
     await createGreenApi(credentials).sendMessage('10000000', 'Привет');
     expect(fetchMock).toHaveBeenCalledWith('https://4100.api.green-api.com/waInstance41001234/sendMessage/test-token', expect.objectContaining({ method: 'POST', body: JSON.stringify({ chatId: '10000000', message: 'Привет' }) }));

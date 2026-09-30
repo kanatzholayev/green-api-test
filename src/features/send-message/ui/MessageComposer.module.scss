@@ -5,5 +5,5 @@
 .composer :global(textarea) { padding: 7px 0; font-size: 14px; line-height: 1.5; }
 .hint { max-width: 850px; margin: 6px auto 0; text-align: right; color: #8793a0; font-size: 11px; }
 
-@media (max-width: 800px) { .area { padding: 10px 16px 16px; } }
-@media (max-width: 640px) { .area { padding: 10px 12px max(12px, env(safe-area-inset-bottom)); } }
+@media (width <= 800px) { .area { padding: 10px 16px 16px; } }
+@media (width <= 640px) { .area { padding: 10px 12px max(12px, env(safe-area-inset-bottom)); } }
