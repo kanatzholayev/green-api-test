@@ -1,4 +1,4 @@
-import { createContext, forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ChatBox } from '@mui/x-chat';
 import type {
@@ -21,29 +21,26 @@ const connectionTitle = {
   stopped: 'Нет подключения',
 } as const;
 
-const chromeContext = createContext({
-  instanceId: '',
-  onCreate: () => {},
-  onLogout: () => {},
-});
+type ConversationsPaneProps = React.ComponentProps<'div'> & {
+  instanceId: string;
+  onNewChat: () => void;
+  onLogout: () => void;
+};
 
-const ConversationsPane = forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(
-  ({ children, className, ...props }, ref) => {
-    const { instanceId, onCreate, onLogout } = useContext(chromeContext);
-    return (
-      <div ref={ref} className={`${styles.conversationsPane} ${className ?? ''}`} {...props}>
-        <header className={styles.sidebarHeader}>
-          <h1>Чаты</h1>
-          <Button onClick={onCreate}>Новый чат</Button>
-        </header>
-        {children}
-        <footer className={styles.sidebarFooter}>
-          <span className={styles.instanceLabel}>Инстанс {instanceId}</span>
-          <Button onClick={onLogout}>Выйти</Button>
-        </footer>
-      </div>
-    );
-  },
+const ConversationsPane = forwardRef<HTMLDivElement, ConversationsPaneProps>(
+  ({ children, className, instanceId, onNewChat, onLogout, ...props }, ref) => (
+    <div ref={ref} className={`${styles.conversationsPane} ${className ?? ''}`} {...props}>
+      <header className={styles.sidebarHeader}>
+        <h1>Чаты</h1>
+        <Button onClick={onNewChat}>Новый чат</Button>
+      </header>
+      {children}
+      <footer className={styles.sidebarFooter}>
+        <span className={styles.instanceLabel}>Инстанс {instanceId}</span>
+        <Button onClick={onLogout}>Выйти</Button>
+      </footer>
+    </div>
+  ),
 );
 
 const preview = (chat: Chat): string => {
@@ -179,20 +176,22 @@ export const ChatWorkspace = ({
     [api, addMessage, updateMessage],
   );
 
-  const chrome = useMemo(
-    () => ({
-      instanceId: credentials.idInstance,
-      onCreate: () => setCreateOpen(true),
-      onLogout: () => setLogoutOpen(true),
-    }),
-    [credentials.idInstance],
-  );
+  const paneChrome = {
+    instanceId: credentials.idInstance,
+    onNewChat: () => setCreateOpen(true),
+    onLogout: () => setLogoutOpen(true),
+  };
 
   return (
-    <chromeContext.Provider value={chrome}>
+    <>
       <main className={styles.page}>
         {chats.length === 0 ? (
-          <ConversationsPane className={styles.emptyList} role="navigation" aria-label="Чаты">
+          <ConversationsPane
+            className={styles.emptyList}
+            role="navigation"
+            aria-label="Чаты"
+            {...paneChrome}
+          >
             <div className={styles.emptySidebar}>Пока нет чатов</div>
           </ConversationsPane>
         ) : null}
@@ -218,6 +217,7 @@ export const ChatWorkspace = ({
           localeText={localeText}
           slots={{ conversationsPane: ConversationsPane, messageActions: null }}
           slotProps={{
+            conversationsPane: paneChrome,
             composerInput: { maxLength: 4096, maxRows: 5 },
             composerRoot: { disabled: !activeChat },
             conversationHeaderActions: {
@@ -259,6 +259,6 @@ export const ChatWorkspace = ({
           <Button onClick={onLogout}>Выйти</Button>
         </DialogActions>
       </Dialog>
-    </chromeContext.Provider>
+    </>
   );
 };
