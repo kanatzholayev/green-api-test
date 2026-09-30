@@ -3,7 +3,7 @@ import type { ChatEvent, ChatState } from './types';
 
 export const initialChatState: ChatState = { chats: [], activeChatId: null };
 
-export function chatReducer(state: ChatState, event: ChatEvent): ChatState {
+export const chatReducer = (state: ChatState, event: ChatEvent): ChatState => {
   switch (event.type) {
     case 'chat-created': {
       const existing = state.chats.find(chat => chat.id === event.id);
@@ -45,4 +45,4 @@ export function chatReducer(state: ChatState, event: ChatEvent): ChatState {
       } : chat) };
     }
   }
-}
+};

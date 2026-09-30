@@ -3,21 +3,19 @@ import type { Notification } from '../../../shared/api/types';
 
 export type ReceivingState = { status: 'connecting' | 'online' | 'retrying' | 'stopped'; error?: unknown };
 
-export function abortableDelay(ms: number, signal: AbortSignal): Promise<void> {
-  return new Promise(resolve => {
-    if (signal.aborted) { resolve(); return; }
-    const done = () => { clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); };
-    const timer = setTimeout(done, ms);
-    signal.addEventListener('abort', done, { once: true });
-  });
-}
+export const abortableDelay = (ms: number, signal: AbortSignal): Promise<void> => new Promise(resolve => {
+  if (signal.aborted) { resolve(); return; }
+  const done = () => { clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); };
+  const timer = setTimeout(done, ms);
+  signal.addEventListener('abort', done, { once: true });
+});
 
-export async function pollNotifications(
+export const pollNotifications = async (
   api: Pick<GreenApi, 'receiveNotification' | 'deleteNotification'>,
   signal: AbortSignal,
   onNotification: (notification: Notification) => void,
   onState: (state: ReceivingState) => void,
-): Promise<void> {
+): Promise<void> => {
   let failures = 0;
   // Keep a pending receipt until acknowledged. A failed DELETE must never advance the queue.
   let pending: Notification | null = null;
@@ -49,4 +47,4 @@ export async function pollNotifications(
       await abortableDelay(Math.min(1000 * 2 ** failures++, 20_000), signal);
     }
   }
-}
+};

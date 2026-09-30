@@ -5,15 +5,15 @@ import { errorMessage } from '../../../shared/api/green-api';
 import { normalizePhone } from '../../../shared/lib/phone';
 import styles from './CreateChat.module.scss';
 
-export function CreateChat({ open, api, onClose, onCreate }: {
+export const CreateChat = ({ open, api, onClose, onCreate }: {
   open: boolean; api: GreenApi; onClose: () => void; onCreate: (id: string, phone: string) => void;
-}) {
+}) => {
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [busy, setBusy] = useState(false);
   const busyRef = useRef(false);
   const [error, setError] = useState('');
-  async function create(raw: string) {
+  const create = async (raw: string) => {
     if (busyRef.current) return;
     busyRef.current = true; setBusy(true); setError('');
     try {
@@ -28,16 +28,16 @@ export function CreateChat({ open, api, onClose, onCreate }: {
       setPhone(''); onClose();
     } catch (cause) { setError(errorMessage(cause)); }
     finally { busyRef.current = false; setBusy(false); }
-  }
-  function close() {
+  };
+  const close = () => {
     if (busy) return;
     setError(''); setPhoneError(''); onClose();
-  }
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  };
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try { normalizePhone(phone); setPhoneError(''); void create(phone); }
     catch (cause) { setPhoneError(errorMessage(cause)); }
-  }
+  };
   return <Dialog open={open} onClose={close} fullWidth maxWidth="xs">
     <form onSubmit={submit} noValidate>
       <DialogTitle>Новый чат</DialogTitle>
@@ -49,4 +49,4 @@ export function CreateChat({ open, api, onClose, onCreate }: {
       <DialogActions><Button onClick={close} disabled={busy}>Отмена</Button><Button variant="contained" type="submit" loading={busy}>Создать чат</Button></DialogActions>
     </form>
   </Dialog>;
-}
+};

@@ -4,7 +4,7 @@ import type { ChatEvent } from '../../../entities/chat';
 import { parseNotification } from '../../../entities/chat';
 import { pollNotifications, type ReceivingState } from './poll-notifications';
 
-export function useReceiveMessages(api: GreenApi, dispatch: Dispatch<ChatEvent>): ReceivingState {
+export const useReceiveMessages = (api: GreenApi, dispatch: Dispatch<ChatEvent>): ReceivingState => {
   const [state, setState] = useState<ReceivingState>({ status: 'connecting' });
   useEffect(() => {
     const controller = new AbortController();
@@ -15,4 +15,4 @@ export function useReceiveMessages(api: GreenApi, dispatch: Dispatch<ChatEvent>)
     return () => controller.abort();
   }, [api, dispatch]);
   return state;
-}
+};

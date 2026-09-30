@@ -3,6 +3,4 @@ const dayFormatter = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: '
 
 export const formatTime = (timestamp: number) => timeFormatter.format(timestamp);
 export const dayKey = (timestamp: number) => new Date(timestamp).toDateString();
-export function formatDay(timestamp: number): string {
-  return dayKey(timestamp) === dayKey(Date.now()) ? 'Сегодня' : dayFormatter.format(timestamp);
-}
+export const formatDay = (timestamp: number): string => dayKey(timestamp) === dayKey(Date.now()) ? 'Сегодня' : dayFormatter.format(timestamp);

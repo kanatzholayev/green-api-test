@@ -19,7 +19,7 @@ const chromeContext = createContext({
   onLogout: () => {},
 });
 
-const ConversationsPane = forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(function ConversationsPane({ children, className, ...props }, ref) {
+const ConversationsPane = forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(({ children, className, ...props }, ref) => {
   const { instanceId, onCreate, onLogout } = useContext(chromeContext);
   return <div ref={ref} className={`${styles.conversationsPane} ${className ?? ''}`} {...props}>
     <header className={styles.sidebarHeader}><h1>Чаты</h1>
@@ -32,30 +32,28 @@ const ConversationsPane = forwardRef<HTMLDivElement, React.ComponentProps<'div'>
   </div>;
 });
 
-function preview(chat: Chat): string {
+const preview = (chat: Chat): string => {
   const last = chat.messages.at(-1);
   return last ? `${last.direction === 'outgoing' ? 'Вы: ' : ''}${last.text}` : 'Нет сообщений';
-}
+};
 
-function toBoxStatus(status: ChatMessage['status']): XChatMessage['status'] {
+const toBoxStatus = (status: ChatMessage['status']): XChatMessage['status'] => {
   if (status === 'failed' || status === 'uncertain') return 'error';
   if (status === 'read') return 'read';
   return status === 'sending' ? 'sending' : 'sent';
-}
+};
 
-function toBoxMessage(chat: Chat, message: ChatMessage): XChatMessage {
-  return {
-    id: message.id,
-    conversationId: chat.id,
-    role: message.direction === 'outgoing' ? 'user' : 'assistant',
-    parts: [{ type: 'text', text: message.text }],
-    createdAt: new Date(message.timestamp).toISOString(),
-    status: toBoxStatus(message.status),
-    author: message.direction === 'incoming' ? { id: chat.id, displayName: chat.title } : { id: 'self', displayName: 'Вы' },
-  };
-}
+const toBoxMessage = (chat: Chat, message: ChatMessage): XChatMessage => ({
+  id: message.id,
+  conversationId: chat.id,
+  role: message.direction === 'outgoing' ? 'user' : 'assistant',
+  parts: [{ type: 'text', text: message.text }],
+  createdAt: new Date(message.timestamp).toISOString(),
+  status: toBoxStatus(message.status),
+  author: message.direction === 'incoming' ? { id: chat.id, displayName: chat.title } : { id: 'self', displayName: 'Вы' },
+});
 
-function toBoxConversation(chat: Chat): ChatConversation {
+const toBoxConversation = (chat: Chat): ChatConversation => {
   const last = chat.messages.at(-1);
   return {
     id: chat.id,
@@ -65,11 +63,9 @@ function toBoxConversation(chat: Chat): ChatConversation {
     readState: chat.unread ? 'unread' : 'read',
     lastMessageAt: last ? new Date(last.timestamp).toISOString() : undefined,
   };
-}
+};
 
-function messageText(message: XChatMessage): string {
-  return message.parts.reduce((text, part) => part.type === 'text' ? text + part.text : text, '');
-}
+const messageText = (message: XChatMessage): string => message.parts.reduce((text, part) => part.type === 'text' ? text + part.text : text, '');
 
 const localeText = {
   composerInputPlaceholder: 'Сообщение',
@@ -89,7 +85,7 @@ const localeText = {
   conversationTimestampLabel: (dateTime: string) => formatTime(Date.parse(dateTime)),
 };
 
-export function ChatWorkspace({ credentials, onLogout }: { credentials: GreenApiCredentials; onLogout: () => void }) {
+export const ChatWorkspace = ({ credentials, onLogout }: { credentials: GreenApiCredentials; onLogout: () => void }) => {
   const api = useMemo(() => createGreenApi(credentials), [credentials]);
   const [state, dispatch] = useReducer(chatReducer, initialChatState);
   const [createOpen, setCreateOpen] = useState(false);
@@ -104,7 +100,7 @@ export function ChatWorkspace({ credentials, onLogout }: { credentials: GreenApi
   const messages = activeChat ? activeChat.messages.map(message => toBoxMessage(activeChat, message)) : [];
 
   const adapter = useMemo<ChatAdapter>(() => ({
-    async sendMessage({ message, conversationId }) {
+    sendMessage: async ({ message, conversationId }) => {
       const chatId = conversationId ?? message.conversationId;
       const text = messageText(message).trim();
       if (!chatId || !text) throw new Error('Не удалось отправить сообщение.');
@@ -164,4 +160,4 @@ export function ChatWorkspace({ credentials, onLogout }: { credentials: GreenApi
     <CreateChat open={createOpen} api={api} onClose={() => setCreateOpen(false)} onCreate={(id, phone) => dispatch({ type: 'chat-created', id, phone })} />
     <Dialog open={logoutOpen} onClose={() => setLogoutOpen(false)}><DialogTitle>Выйти?</DialogTitle><DialogContent>Чаты этой сессии будут удалены.</DialogContent><DialogActions><Button onClick={() => setLogoutOpen(false)}>Отмена</Button><Button onClick={onLogout}>Выйти</Button></DialogActions></Dialog>
   </chromeContext.Provider>;
-}
+};

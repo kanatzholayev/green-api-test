@@ -4,12 +4,12 @@ import type { ChatMessage } from '../model/types';
 import styles from './MessageBubble.module.scss';
 
 const statusLabels = { sending: 'Отправляется', sent: 'Принято GREEN-API', delivered: 'Доставлено', read: 'Прочитано', failed: 'Не отправлено', uncertain: 'Отправка не подтверждена' };
-function statusMark(message: ChatMessage) {
+const statusMark = (message: ChatMessage) => {
   if (message.status === 'sending') return '…';
   if (message.status === 'failed' || message.status === 'uncertain') return '!';
   return message.status === 'delivered' || message.status === 'read' ? '✓✓' : '✓';
-}
-export function MessageBubble({ message, onRetry }: { message: ChatMessage; onRetry: () => void }) {
+};
+export const MessageBubble = ({ message, onRetry }: { message: ChatMessage; onRetry: () => void }) => {
   const outgoing = message.direction === 'outgoing';
   const unsuccessful = message.status === 'failed' || message.status === 'uncertain';
   return <div className={`${styles.row} ${outgoing ? styles.outgoing : ''}`}>
@@ -25,4 +25,4 @@ export function MessageBubble({ message, onRetry }: { message: ChatMessage; onRe
       </div> : null}
     </div>
   </div>;
-}
+};

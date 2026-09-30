@@ -12,7 +12,7 @@ const stateErrors: Record<string, string> = {
   suspended: 'Инстанс приостановлен. Проверьте статус в личном кабинете.',
 };
 
-export function ConnectInstance({ onConnect }: { onConnect: (credentials: GreenApiCredentials) => void }) {
+export const ConnectInstance = ({ onConnect }: { onConnect: (credentials: GreenApiCredentials) => void }) => {
   const [values, setValues] = useState<GreenApiCredentials>({ idInstance: '', apiTokenInstance: '', apiUrl: '' });
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof GreenApiCredentials, string>>>({});
   const [busy, setBusy] = useState(false);
@@ -21,13 +21,13 @@ export function ConnectInstance({ onConnect }: { onConnect: (credentials: GreenA
   const [setup, setSetup] = useState<{ credentials: GreenApiCredentials; hasWebhook: boolean } | null>(null);
   const [saved, setSaved] = useState(false);
 
-  function change(field: keyof GreenApiCredentials, value: string) {
+  const change = (field: keyof GreenApiCredentials, value: string) => {
     setValues(current => ({ ...current, [field]: value }));
     setFieldErrors(current => ({ ...current, [field]: undefined }));
     setSetup(null); setSaved(false); setError('');
-  }
+  };
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const errors: Partial<Record<keyof GreenApiCredentials, string>> = {};
     if (!/^\d+$/.test(values.idInstance.trim())) errors.idInstance = values.idInstance.trim() ? 'ID должен содержать только цифры' : 'Укажите idInstance';
@@ -35,9 +35,9 @@ export function ConnectInstance({ onConnect }: { onConnect: (credentials: GreenA
     try { normalizeApiUrl(values.apiUrl); } catch { errors.apiUrl = values.apiUrl ? 'Например, https://4100.api.green-api.com' : 'Укажите apiUrl'; }
     setFieldErrors(errors);
     if (Object.keys(errors).length === 0) void connect(values);
-  }
+  };
 
-  async function connect(values: GreenApiCredentials) {
+  const connect = async (values: GreenApiCredentials) => {
     if (busyRef.current) return;
     busyRef.current = true; setBusy(true); setError(''); setSetup(null); setSaved(false);
     try {
@@ -53,9 +53,9 @@ export function ConnectInstance({ onConnect }: { onConnect: (credentials: GreenA
       onConnect(credentials);
     } catch (cause) { setError(errorMessage(cause)); }
     finally { busyRef.current = false; setBusy(false); }
-  }
+  };
 
-  async function configure() {
+  const configure = async () => {
     if (!setup || busyRef.current) return;
     busyRef.current = true; setBusy(true); setError('');
     try {
@@ -64,7 +64,7 @@ export function ConnectInstance({ onConnect }: { onConnect: (credentials: GreenA
       setSaved(true); setSetup(null);
     } catch (cause) { setError(errorMessage(cause)); }
     finally { busyRef.current = false; setBusy(false); }
-  }
+  };
 
   return (
     <main className={styles.page}>
@@ -90,4 +90,4 @@ export function ConnectInstance({ onConnect }: { onConnect: (credentials: GreenA
       </div>
     </main>
   );
-}
+};

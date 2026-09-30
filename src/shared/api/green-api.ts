@@ -7,7 +7,7 @@ export class GreenApiError extends Error {
   }
 }
 
-export function normalizeApiUrl(value: string): string {
+export const normalizeApiUrl = (value: string): string => {
   const url = new URL(value.trim());
   if (url.protocol !== 'https:' || !/^([a-z0-9-]+\.)*green-api\.com$/i.test(url.hostname)
     || url.username || url.password || url.port || url.search || url.hash
@@ -15,22 +15,22 @@ export function normalizeApiUrl(value: string): string {
     throw new Error('Укажите HTTPS-адрес API из кабинета GREEN-API, без пути и параметров.');
   }
   return url.origin;
-}
+};
 
-export function errorMessage(error: unknown): string {
+export const errorMessage = (error: unknown): string => {
   if (error instanceof GreenApiError) return error.message;
   if (error instanceof TypeError) return 'Не удалось связаться с GREEN-API. Проверьте интернет и адрес API.';
   return error instanceof Error ? error.message : 'Не удалось выполнить запрос. Попробуйте ещё раз.';
-}
+};
 
-export function createGreenApi(credentials: GreenApiCredentials) {
+export const createGreenApi = (credentials: GreenApiCredentials) => {
   const origin = normalizeApiUrl(credentials.apiUrl);
   const base = `${origin}/waInstance${encodeURIComponent(credentials.idInstance)}`;
 
-  async function request<T>(method: string, options: {
+  const request = async <T>(method: string, options: {
     verb?: 'GET' | 'POST' | 'DELETE'; body?: unknown; signal?: AbortSignal;
     suffix?: string; timeout?: number;
-  } = {}): Promise<T> {
+  } = {}): Promise<T> => {
     const url = `${base}/${method}/${encodeURIComponent(credentials.apiTokenInstance)}${options.suffix ?? ''}`;
     const signal = options.signal
       ? AbortSignal.any([options.signal, AbortSignal.timeout(options.timeout ?? 20_000)])
@@ -55,7 +55,7 @@ export function createGreenApi(credentials: GreenApiCredentials) {
     }
     const raw = await response.text();
     return (raw ? JSON.parse(raw) : null) as T;
-  }
+  };
 
   return {
     getState: () => request<{ stateInstance: string }>('getStateInstance'),
@@ -76,6 +76,6 @@ export function createGreenApi(credentials: GreenApiCredentials) {
       verb: 'DELETE', suffix: `/${receiptId}`, signal,
     }),
   };
-}
+};
 
 export type GreenApi = ReturnType<typeof createGreenApi>;

@@ -1,10 +1,8 @@
 import type { ChatEvent, MessageStatus } from './types';
 
-function record(value: unknown): Record<string, unknown> {
-  return value !== null && typeof value === 'object' ? value as Record<string, unknown> : {};
-}
+const record = (value: unknown): Record<string, unknown> => value !== null && typeof value === 'object' ? value as Record<string, unknown> : {};
 
-export function parseNotification(value: unknown): ChatEvent | null {
+export const parseNotification = (value: unknown): ChatEvent | null => {
   const body = record(value);
   const sender = record(body.senderData);
   const data = record(body.messageData);
@@ -32,4 +30,4 @@ export function parseNotification(value: unknown): ChatEvent | null {
     if (status) return { type: 'message-status', chatId: body.chatId, remoteId: body.idMessage, status };
   }
   return null;
-}
+};

@@ -19,6 +19,18 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.flat.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'func-style': ['error', 'expression'],
+      'prefer-arrow-callback': 'error',
+      'unicorn/consistent-function-style': ['error', {
+        default: 'arrow-function',
+        defaultExport: 'arrow-function',
+        namedFunctions: 'arrow-function',
+        namedExports: 'arrow-function',
+        callbacks: 'arrow-function',
+        objectProperties: 'arrow-function',
+        reassignedVariables: 'arrow-function',
+        typedVariables: 'arrow-function',
+      }],
       'unicorn/filename-case': unicornFilenameCase,
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/no-null': 'off',
