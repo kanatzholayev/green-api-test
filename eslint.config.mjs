@@ -9,6 +9,14 @@ import globals from 'globals';
 
 const sourceFiles = ['src/**/*.{ts,tsx}', 'tests/**/*.{ts,tsx}', 'vite.config.ts'];
 const unicornFilenameCase = ['error', { cases: { kebabCase: true, pascalCase: true } }];
+const prettierOptions = {
+  singleQuote: true,
+  jsxSingleQuote: false,
+  semi: true,
+  trailingComma: 'all',
+  arrowParens: 'avoid',
+  printWidth: 100,
+};
 
 export default tseslint.config(
   { ignores: ['dist', 'node_modules', 'coverage'] },
@@ -83,4 +91,9 @@ export default tseslint.config(
     },
   },
   prettierRecommended,
+  {
+    rules: {
+      'prettier/prettier': ['error', prettierOptions, { usePrettierrc: false }],
+    },
+  },
 );
