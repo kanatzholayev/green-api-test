@@ -1,13 +1,6 @@
 import { useRef, useState } from 'react';
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { matchIsValidTel, MuiTelInput } from 'mui-tel-input';
 import type { GreenApi } from '../../../shared/api/green-api';
 import { errorMessage } from '../../../shared/api/green-api';
 import { normalizePhone } from '../../../shared/lib/phone';
@@ -66,13 +59,12 @@ export const CreateChat = ({
   };
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      normalizePhone(phone);
-      setPhoneError('');
-      void create(phone);
-    } catch (cause) {
-      setPhoneError(errorMessage(cause));
+    if (!matchIsValidTel(phone)) {
+      setPhoneError('Введите номер телефона с кодом страны.');
+      return;
     }
+    setPhoneError('');
+    void create(phone);
   };
   return (
     <Dialog open={open} onClose={close} fullWidth maxWidth="xs">
@@ -80,22 +72,25 @@ export const CreateChat = ({
         <DialogTitle>Новый чат</DialogTitle>
         <DialogContent className={styles.content}>
           <p className={styles.description}>Номер с кодом страны</p>
-          <TextField
+          <MuiTelInput
             autoFocus
             label="Номер телефона"
             value={phone}
-            onChange={event => {
-              setPhone(event.target.value);
+            onChange={value => {
+              setPhone(value);
               setPhoneError('');
               setError('');
             }}
+            defaultCountry="RU"
+            preferredCountries={['RU', 'KZ', 'BY']}
+            langOfCountryName="ru"
+            forceCallingCode
             error={Boolean(phoneError)}
             helperText={phoneError}
-            placeholder="+7 999 123 45 67"
-            type="tel"
             autoComplete="tel"
             disabled={busy}
             fullWidth
+            MenuProps={{ disablePortal: true }}
           />
           {error ? (
             <Alert severity="error" role="alert">
