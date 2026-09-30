@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Обычно http://127.0.0.1:5173. Дальше: `npm test`, `npm run lint`, `npm run build`.
+Обычно http://127.0.0.1:5173. Дальше: `npm run lint`, `npm run build`.
 
 ## Подключение
 

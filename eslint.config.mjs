@@ -7,7 +7,7 @@ import css from '@eslint/css';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 
-const sourceFiles = ['src/**/*.{ts,tsx}', 'tests/**/*.{ts,tsx}', 'vite.config.ts'];
+const sourceFiles = ['src/**/*.{ts,tsx}', 'vite.config.ts'];
 const unicornFilenameCase = ['error', { cases: { kebabCase: true, pascalCase: true } }];
 const prettierOptions = {
   singleQuote: true,
