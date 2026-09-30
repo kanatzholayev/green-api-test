@@ -1,13 +1,4 @@
-import {
-  createContext,
-  forwardRef,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import { createContext, forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ChatBox } from '@mui/x-chat';
 import type {
@@ -18,8 +9,7 @@ import type {
 import { createGreenApi, errorMessage, GreenApiError } from '../../../shared/api/green-api';
 import type { GreenApiCredentials } from '../../../shared/api/types';
 import { formatTime } from '../../../shared/lib/date';
-import { chatReducer, initialChatState } from '../../../entities/chat';
-import type { Chat, ChatMessage } from '../../../entities/chat';
+import { useChatStore, type Chat, type ChatMessage } from '../../../entities/chat';
 import { CreateChat } from '../../../features/create-chat';
 import { useReceiveMessages } from '../../../features/receive-messages';
 import styles from './ChatWorkspace.module.scss';
@@ -121,20 +111,29 @@ export const ChatWorkspace = ({
   onLogout: () => void;
 }) => {
   const api = useMemo(() => createGreenApi(credentials), [credentials]);
-  const [state, dispatch] = useReducer(chatReducer, initialChatState);
+  const {
+    chats: chatsState,
+    activeChatId,
+    selectChat,
+    createChat,
+    reset,
+    addMessage,
+    updateMessage,
+  } = useChatStore();
   const [createOpen, setCreateOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const receiving = useReceiveMessages(api, dispatch);
-  const activeChat = state.chats.find(chat => chat.id === state.activeChatId);
+  const receiving = useReceiveMessages(api);
+  const activeChat = chatsState.find(chat => chat.id === activeChatId);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     return () => {
       mounted.current = false;
+      reset();
     };
-  }, []);
+  }, [reset]);
 
-  const chats = [...state.chats].sort(
+  const chats = [...chatsState].sort(
     (a, b) => (b.messages.at(-1)?.timestamp ?? 0) - (a.messages.at(-1)?.timestamp ?? 0),
   );
   const conversations = chats.map(toBoxConversation);
@@ -148,33 +147,19 @@ export const ChatWorkspace = ({
         const chatId = conversationId ?? message.conversationId;
         const text = messageText(message).trim();
         if (!chatId || !text) throw new Error('Не удалось отправить сообщение.');
-        dispatch({
-          type: 'message-updated',
-          chatId,
+        updateMessage(chatId, message.id, { status: 'sending', error: undefined });
+        addMessage(chatId, {
           id: message.id,
-          patch: { status: 'sending', error: undefined },
-        });
-        dispatch({
-          type: 'message-added',
-          chatId,
-          message: {
-            id: message.id,
-            text,
-            timestamp: message.createdAt ? Date.parse(message.createdAt) : Date.now(),
-            direction: 'outgoing',
-            status: 'sending',
-          },
+          text,
+          timestamp: message.createdAt ? Date.parse(message.createdAt) : Date.now(),
+          direction: 'outgoing',
+          status: 'sending',
         });
         try {
           const result = await api.sendMessage(chatId, text);
           if (!result?.idMessage) throw new Error('GREEN-API не вернул подтверждение отправки.');
           if (mounted.current)
-            dispatch({
-              type: 'message-updated',
-              chatId,
-              id: message.id,
-              patch: { remoteId: result.idMessage, status: 'sent' },
-            });
+            updateMessage(chatId, message.id, { remoteId: result.idMessage, status: 'sent' });
           return new ReadableStream({
             start: controller => {
               controller.close();
@@ -183,20 +168,15 @@ export const ChatWorkspace = ({
         } catch (cause) {
           const definiteFailure = cause instanceof GreenApiError && (cause.status ?? 500) < 500;
           if (mounted.current)
-            dispatch({
-              type: 'message-updated',
-              chatId,
-              id: message.id,
-              patch: {
-                status: definiteFailure ? 'failed' : 'uncertain',
-                error: errorMessage(cause),
-              },
+            updateMessage(chatId, message.id, {
+              status: definiteFailure ? 'failed' : 'uncertain',
+              error: errorMessage(cause),
             });
           throw cause;
         }
       },
     }),
-    [api],
+    [api, addMessage, updateMessage],
   );
 
   const chrome = useMemo(
@@ -224,8 +204,8 @@ export const ChatWorkspace = ({
           roleDisplayNames={{ user: 'Вы', assistant: 'Собеседник' }}
           conversations={conversations}
           messages={messages}
-          activeConversationId={state.activeChatId ?? undefined}
-          onActiveConversationChange={id => dispatch({ type: 'chat-selected', id: id ?? null })}
+          activeConversationId={activeChatId ?? undefined}
+          onActiveConversationChange={id => selectChat(id ?? null)}
           features={{
             conversationList: true,
             dateDivider: true,
@@ -269,7 +249,7 @@ export const ChatWorkspace = ({
         open={createOpen}
         api={api}
         onClose={() => setCreateOpen(false)}
-        onCreate={(id, phone) => dispatch({ type: 'chat-created', id, phone })}
+        onCreate={(id, phone) => createChat(id, phone)}
       />
       <Dialog open={logoutOpen} onClose={() => setLogoutOpen(false)}>
         <DialogTitle>Выйти?</DialogTitle>
